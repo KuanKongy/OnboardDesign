@@ -1,8 +1,8 @@
 // Generates email-safe HTML files (email-export/*.html) from the SAME data
 // modules the website renders from — the newsletter never drifts from the
 // tracker. Run: npm run build:email
-// After deploying the site, re-run with the real URL:
-//   TRACKER_URL="https://your-site.netlify.app/#/tracker" npm run build:email
+// Override the deployed URL if it changes:
+//   TRACKER_URL="https://example.com/#/tracker" npm run build:email
 
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url'
 import { TASKS } from '../src/data/tasks.js'
 import { ISSUES } from '../src/data/newsletters.js'
 
-const TRACKER_URL = process.env.TRACKER_URL ?? 'http://localhost:5173/#/tracker'
+const TRACKER_URL = process.env.TRACKER_URL ?? 'https://onboard-design.vercel.app/#/tracker'
 
 const C = {
   blue: '#002145',
@@ -219,4 +219,4 @@ for (const issue of ISSUES) {
   console.log(`✓ ${issue.id}.html (${kb} KB) + ${issue.id}.txt — "${issue.subject}"`)
 }
 console.log(`\nTracker URL used: ${TRACKER_URL}`)
-console.log('Set TRACKER_URL env var and re-run after deploying the site.')
+console.log('Set TRACKER_URL env var and re-run if the deployed URL changes.')

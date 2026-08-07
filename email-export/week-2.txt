@@ -22,4 +22,4 @@ WHAT CHANGED SINCE LAST ISSUE
 [DONE WITH THIS] Double-check your study permit — The easy-fix window has passed. If you spotted an error, book ISA now — don't wait for the next issue.
 
 Full steps, peer notes, and live updates for every task:
-Open your Arrival Tracker: http://localhost:5173/#/tracker
+Open your Arrival Tracker: https://onboard-design.vercel.app/#/tracker

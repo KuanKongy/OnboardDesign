@@ -20,4 +20,4 @@ COMING UP
 - Apply for BC MSP health insurance (Apply in month 1)
 
 Full steps, peer notes, and live updates for every task:
-Open your Arrival Tracker: http://localhost:5173/#/tracker
+Open your Arrival Tracker: https://onboard-design.vercel.app/#/tracker

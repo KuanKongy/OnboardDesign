@@ -1,5 +1,7 @@
 # UBC Arrival Guide — MVP Prototype
 
+**Live site:** <https://onboard-design.vercel.app>
+
 A two-component product for newly arrived UBC international students:
 
 - **Arrival Tracker (website)** — the source of truth. Prioritized arrival tasks with consolidated step-by-step instructions, verified peer notes, completion tracking, and an anonymous Q&A entry point.
@@ -54,7 +56,7 @@ Inbox → open Week 1 issue → top task is #1 in the "Do these now" list → "O
 - `week-1.html` / `week-2.html` — table-based, inline-styled HTML. Open in a browser, Select All → Copy → paste into a Gmail compose window (formatting carries over), add the subject line, send.
 - `week-1.txt` / `week-2.txt` — plain-text versions with the subject line at the top, for copy-paste anywhere.
 
-After deploying the site, regenerate so the CTA link works for recipients:
+The CTA link points to the live site (`https://onboard-design.vercel.app/#/tracker`) by default. If the deployed URL ever changes, regenerate with:
 
 ```bash
 TRACKER_URL="https://your-site.example/#/tracker" npm run build:email
