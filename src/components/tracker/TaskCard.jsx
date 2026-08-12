@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { URGENCY_META } from '../../lib/urgency'
-import PadlockIcon from '../layout/PadlockIcon'
+import { URGENCY_META, OVERDUE_META } from '../../lib/urgency'
+import AskIcon from '../layout/AskIcon'
 import TaskSteps from './TaskSteps'
 import PeerNote from './PeerNote'
 import SourceAttribution from './SourceAttribution'
@@ -47,7 +47,7 @@ export default function TaskCard({
   onToggleDone,
 }) {
   const checked = isDone || isFinishing
-  const meta = URGENCY_META[task.urgency]
+  const meta = task.overdue ? OVERDUE_META : URGENCY_META[task.urgency]
   const bodyId = `task-body-${task.id}`
 
   const doneDate = completedAt
@@ -84,7 +84,7 @@ export default function TaskCard({
                 <span
                   className={`rounded-full border px-2 py-0.5 text-[11px] font-bold tracking-wide uppercase ${meta.badgeClass}`}
                 >
-                  {task.deadlineWindow}
+                  {task.overdue ? OVERDUE_META.label : task.deadlineWindow}
                 </span>
               )}
               {isNextUp && (
@@ -94,7 +94,11 @@ export default function TaskCard({
               )}
             </div>
             <p className="mt-0.5 text-sm text-gray-500">
-              {isDone ? `Done ${doneDate}` : task.estimatedTime}
+              {isDone
+                ? `Done ${doneDate}`
+                : task.overdue
+                  ? `${task.estimatedTime} · was due: ${task.deadlineWindow.toLowerCase()}`
+                  : task.estimatedTime}
             </p>
           </div>
           <svg
@@ -112,15 +116,6 @@ export default function TaskCard({
             />
           </svg>
         </button>
-        {/* Always-visible ask entry — no need to expand the card first */}
-        <Link
-          to={`/ask?task=${task.id}`}
-          aria-label={`Ask about "${task.title}" anonymously`}
-          title="Ask about this anonymously"
-          className="shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-ubc-mist hover:text-ubc-link"
-        >
-          <PadlockIcon className="h-4 w-4" />
-        </Link>
       </div>
 
       {/* Smooth expand/collapse without measuring heights */}
@@ -140,7 +135,7 @@ export default function TaskCard({
                 to={`/ask?task=${task.id}`}
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-ubc-link hover:underline"
               >
-                <PadlockIcon className="h-4 w-4" />
+                <AskIcon className="h-4 w-4" />
                 Ask a question anonymously
               </Link>
             </div>

@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { QA_POSTS } from '../../data/qaPosts'
 import { getTask } from '../../data/tasks'
 import { useToast } from '../../hooks/useToast'
-import PadlockIcon from '../layout/PadlockIcon'
+import AskIcon from '../layout/AskIcon'
 
 // Wizard-of-Oz anonymous Q&A board doubling as an FAQ. R4 is binary: there
 // must be NO step anywhere on this page that names or identifies the asker.
@@ -46,6 +46,22 @@ export default function AskPage() {
   const topicTask = getTask(searchParams.get('task'))
   const selectTopic = (taskId) => setSearchParams(taskId ? { task: taskId } : {})
 
+  // Tags on the question being drafted: seeded from the task the user came
+  // from, freely removable, and extendable with preset or custom tags.
+  const [tags, setTags] = useState(() =>
+    topicTask ? [CHIP_LABELS[topicTask.id] ?? topicTask.title] : []
+  )
+  const [tagDraft, setTagDraft] = useState('')
+
+  const addTag = (label) => {
+    const tag = label.trim()
+    if (!tag) return
+    setTags((cur) => (cur.includes(tag) ? cur : [...cur, tag]))
+    setTagDraft('')
+  }
+  const removeTag = (label) => setTags((cur) => cur.filter((t) => t !== label))
+  const suggestions = Object.values(CHIP_LABELS).filter((l) => !tags.includes(l))
+
   // Topic chips: every task that has at least one post
   const chipTaskIds = [...new Set(QA_POSTS.map((p) => p.taskId).filter(Boolean))]
 
@@ -62,6 +78,8 @@ export default function AskPage() {
     e.preventDefault()
     if (!draft.trim()) return
     setDraft('')
+    setTags([])
+    setTagDraft('')
     showToast('Posted anonymously ✓  Verified answers usually arrive within 24 hours.')
   }
 
@@ -76,7 +94,7 @@ export default function AskPage() {
     <div>
       <div className="rounded-xl border border-ubc-pale bg-ubc-mist p-4">
         <h1 className="flex items-center gap-2 text-xl font-bold text-ubc-blue">
-          <PadlockIcon className="h-5 w-5" />
+          <AskIcon className="h-5 w-5" />
           Ask anonymously
         </h1>
         <p className="mt-1 text-sm text-gray-700">
@@ -89,22 +107,6 @@ export default function AskPage() {
         onSubmit={handleSubmit}
         className="mt-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
       >
-        {topicTask && (
-          <p className="mb-2 flex items-center gap-2 text-sm text-gray-600">
-            Asking about:
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700">
-              {topicTask.title}
-              <button
-                type="button"
-                aria-label="Remove topic"
-                onClick={() => selectTopic(null)}
-                className="cursor-pointer text-gray-400 hover:text-gray-700"
-              >
-                ✕
-              </button>
-            </span>
-          </p>
-        )}
         <label htmlFor="question" className="sr-only">
           Your question
         </label>
@@ -116,6 +118,52 @@ export default function AskPage() {
           placeholder="Ask anything — nothing you type here is linked to you."
           className="w-full resize-y rounded-lg border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:border-ubc-link"
         />
+        <div className="mt-2 flex flex-wrap items-center gap-1.5">
+          <span className="text-xs text-gray-500">Tags:</span>
+          {tags.map((tag) => (
+            <span
+              key={tag}
+              className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700"
+            >
+              {tag}
+              <button
+                type="button"
+                aria-label={`Remove tag ${tag}`}
+                onClick={() => removeTag(tag)}
+                className="cursor-pointer text-gray-400 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </span>
+          ))}
+          <input
+            value={tagDraft}
+            onChange={(e) => setTagDraft(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                addTag(tagDraft)
+              }
+            }}
+            placeholder={tags.length ? 'Add another…' : 'Add a tag (optional)…'}
+            aria-label="Add a tag"
+            className="w-32 rounded-full border border-dashed border-gray-300 px-2.5 py-1 text-xs placeholder-gray-400 focus:border-ubc-link focus:outline-none"
+          />
+        </div>
+        {suggestions.length > 0 && (
+          <div className="mt-1.5 flex flex-wrap items-center gap-1">
+            {suggestions.map((label) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => addTag(label)}
+                className="cursor-pointer rounded-full px-2 py-0.5 text-[11px] text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+              >
+                + {label}
+              </button>
+            ))}
+          </div>
+        )}
         <div className="mt-2 flex items-center justify-between">
           <span className="text-xs text-gray-400">Posted as an anonymous number</span>
           <button

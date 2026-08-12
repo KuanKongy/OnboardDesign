@@ -5,7 +5,7 @@ import { groupTasks, getNextUp, resolveTasks, GROUP_LABELS } from '../../lib/urg
 import { useTaskProgress } from '../../hooks/useTaskProgress'
 import { useCanonTime } from '../../hooks/useCanonTime'
 import { useToast } from '../../hooks/useToast'
-import PadlockIcon from '../layout/PadlockIcon'
+import AskIcon from '../layout/AskIcon'
 import ProgressBar from './ProgressBar'
 import FilterTabs from './FilterTabs'
 import TaskGroup from './TaskGroup'
@@ -60,7 +60,7 @@ export default function TrackerPage() {
 
   const counts = {
     all: total,
-    urgent: groups.doNow.length,
+    urgent: groups.doNow.length + groups.overdue.length,
     done: groups.done.length,
   }
 
@@ -90,6 +90,14 @@ export default function TrackerPage() {
             <span className="text-gray-500">({nextUp.deadlineWindow})</span>
           </p>
         )}
+        {groups.overdue.length > 0 && (
+          <p className="mt-1.5 text-sm font-medium text-red-700">
+            You're running behind — {groups.overdue.length}{' '}
+            {groups.overdue.length === 1 ? 'task' : 'tasks'} from earlier{' '}
+            {groups.overdue.length === 1 ? 'is' : 'are'} still open. Find{' '}
+            {groups.overdue.length === 1 ? 'it' : 'them'} under “Catch up” below.
+          </p>
+        )}
         <p className="mt-2 text-xs text-gray-400">
           Only you check things off — nothing here is tracked automatically.
         </p>
@@ -103,7 +111,7 @@ export default function TrackerPage() {
         to="/ask"
         className="mt-4 flex items-center gap-2.5 rounded-xl border border-ubc-pale bg-ubc-mist px-4 py-3 text-sm text-gray-700 transition-colors hover:border-ubc-link"
       >
-        <PadlockIcon className="h-4 w-4 shrink-0 text-ubc-link" />
+        <AskIcon className="h-4 w-4 shrink-0 text-ubc-link" />
         <span>
           <span className="font-semibold text-ubc-blue">Stuck on something? Ask anonymously</span>{' '}
           — no name, no account, no post history. Ever.
@@ -117,6 +125,14 @@ export default function TrackerPage() {
           emptyMessage="No urgent tasks left — nice work. Check ‘Coming up’ for what's next."
         >
           {groups.doNow.map((task) => (
+            <TaskCard key={task.id} {...cardProps(task)} />
+          ))}
+        </TaskGroup>
+      )}
+
+      {(filter === 'all' || filter === 'urgent') && groups.overdue.length > 0 && (
+        <TaskGroup title={GROUP_LABELS.overdue} count={groups.overdue.length}>
+          {groups.overdue.map((task) => (
             <TaskCard key={task.id} {...cardProps(task)} />
           ))}
         </TaskGroup>

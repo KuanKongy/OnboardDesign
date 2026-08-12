@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import PadlockIcon from './PadlockIcon'
+import AskIcon from './AskIcon'
 
 // The one deliberately POLISHED element (trust cue / R3).
 // Self-made text wordmark — official UBC crest/logo is trademarked.
@@ -36,7 +36,7 @@ export default function UbcHeader() {
               Newsletter
             </NavLink>
             <NavLink to="/ask" className={askClass}>
-              <PadlockIcon className="h-3.5 w-3.5" />
+              <AskIcon className="h-3.5 w-3.5" />
               Ask Anonymously
             </NavLink>
           </nav>

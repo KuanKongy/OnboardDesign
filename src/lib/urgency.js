@@ -9,11 +9,18 @@ export const URGENCY_META = {
   later: { label: 'Later', badgeClass: 'bg-gray-100 text-gray-600 border-gray-200' },
 }
 
+// Unfinished tasks whose window has already passed (week-2 `overdue` flag)
+export const OVERDUE_META = {
+  label: 'Overdue',
+  badgeClass: 'bg-red-100 text-red-800 border-red-300',
+}
+
 // One vocabulary for every surface: the tracker groups, the in-app newsletter
 // and the exported emails all read their headings and badge labels from here,
 // so the two surfaces can never disagree about what things are called.
 export const GROUP_LABELS = {
   doNow: 'Do this week',
+  overdue: 'Catch up — these were due earlier',
   comingUp: 'Coming up',
   done: 'Done',
 }
@@ -44,14 +51,17 @@ export function sortByPriority(tasks) {
 }
 
 /**
- * Group tasks for the tracker: "Do this week" (urgent), "Coming up"
- * (soon + later), and "Done" (completed, most recent first).
+ * Group tasks for the tracker: "Do this week" (urgent), "Catch up" (window
+ * already passed, still unfinished — week-2 only), "Coming up" (the rest),
+ * and "Done" (completed, most recent first).
  */
 export function groupTasks(tasks, completedMap) {
   const sorted = sortByPriority(tasks)
+  const open = (t) => !completedMap[t.id]
   return {
-    doNow: sorted.filter((t) => t.urgency === 'urgent' && !completedMap[t.id]),
-    comingUp: sorted.filter((t) => t.urgency !== 'urgent' && !completedMap[t.id]),
+    doNow: sorted.filter((t) => t.urgency === 'urgent' && !t.overdue && open(t)),
+    overdue: sorted.filter((t) => t.overdue && open(t)),
+    comingUp: sorted.filter((t) => t.urgency !== 'urgent' && !t.overdue && open(t)),
     done: sorted
       .filter((t) => completedMap[t.id])
       .sort((a, b) => (completedMap[b.id] > completedMap[a.id] ? 1 : -1)),

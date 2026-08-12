@@ -17,7 +17,8 @@
  * @property {'urgent'|'soon'|'later'} urgency   week-1 baseline tier
  * @property {number} urgencyRank        explicit priority tiebreak (1 = do first)
  * @property {string} deadlineWindow     arrival-anchored, e.g. "First 3 days"
- * @property {{urgency: 'urgent'|'soon'|'later', urgencyRank: number}} [week2]  week-2 override
+ * @property {{urgency: 'urgent'|'soon'|'later', urgencyRank: number, overdue?: boolean}} [week2]
+ *           week-2 override; `overdue` = window has passed, unfinished copies land in "Catch up"
  * @property {string} estimatedTime
  * @property {{text: string, detail?: string, link?: {label: string, url: string}}[]} steps
  * @property {{quote: string, author: string, program: string, verifiedDate: string}} peerNote
@@ -33,7 +34,7 @@ export const TASKS = [
       'Five minutes now saves weeks later — your SIN application and your bank account both need a correct permit.',
     urgency: 'urgent',
     urgencyRank: 1,
-    week2: { urgency: 'soon', urgencyRank: 7 },
+    week2: { urgency: 'soon', urgencyRank: 7, overdue: true },
     deadlineWindow: 'First 1–2 days',
     estimatedTime: '~10 min',
     steps: [
@@ -177,7 +178,7 @@ export const TASKS = [
       'A local number is needed for banking, your SIN, deliveries, and almost every sign-up form.',
     urgency: 'urgent',
     urgencyRank: 4,
-    week2: { urgency: 'soon', urgencyRank: 4 },
+    week2: { urgency: 'soon', urgencyRank: 4, overdue: true },
     deadlineWindow: 'First few days',
     estimatedTime: '~45 min',
     steps: [
@@ -223,7 +224,7 @@ export const TASKS = [
       'Your transit card for buses, SkyTrain and SeaBus — your student U-Pass loads onto it.',
     urgency: 'urgent',
     urgencyRank: 5,
-    week2: { urgency: 'soon', urgencyRank: 6 },
+    week2: { urgency: 'soon', urgencyRank: 6, overdue: true },
     deadlineWindow: 'First 3 days',
     estimatedTime: '~30 min + travel',
     steps: [
