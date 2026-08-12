@@ -13,9 +13,10 @@ export default function InboxShell() {
   const { canonTime, setCanonTime } = useCanonTime()
   const inboxCount = getVisibleIssues(canonTime).length
 
+  // Reset lands on the week-1 inbox — the first page a demo participant sees
   const handleReset = () => {
     resetAll()
-    window.location.hash = '#/tracker'
+    window.location.hash = '#/inbox'
     window.location.reload()
   }
 

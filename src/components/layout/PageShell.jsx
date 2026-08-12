@@ -8,9 +8,9 @@ import { resetAll } from '../../lib/storage'
 export default function PageShell() {
   const [searchParams] = useSearchParams()
 
+  // Clears state and reloads in place — no navigation away from this page
   const handleReset = () => {
     resetAll()
-    window.location.hash = '#/tracker'
     window.location.reload()
   }
 

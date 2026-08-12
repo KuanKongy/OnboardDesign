@@ -140,7 +140,7 @@ export const TASKS = [
         // verify before send: branch locations
         text: "Pick a bank — RBC, TD, CIBC, Scotiabank and BMO all offer newcomer student accounts with no monthly fee. All five are fine; pick the branch you can actually get to.",
         detail:
-          'RBC at Wesbrook Village and TD at 10th & Sasamat are the closest branches to campus, and several banks table on campus during orientation.',
+          'RBC, TD and CIBC are all close on campus — RBC at Wesbrook Village, TD at 10th & Sasamat — and several banks table on campus during orientation.',
       },
       {
         text: "Book an appointment online for a 'newcomer / student account' — walk-ins can wait a long time. Ask for the newcomer student account by name.",

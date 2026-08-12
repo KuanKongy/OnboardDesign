@@ -38,6 +38,17 @@ export const QA_POSTS = [
     answeredBy: 'Peer Mentor',
   },
   {
+    id: 'qa-11',
+    askedBy: 'Student #17',
+    date: 'Sep 3',
+    taskId: 'bank-account',
+    pinned: true,
+    question: 'Which bank is actually the best for international students?',
+    answer:
+      "They're all decent — the big five offer nearly identical no-fee student accounts, so don't overthink the choice. Focus on the branch closest to where you live or to campus: RBC, TD, and CIBC are all close on campus. Pick the one you can walk to when something goes wrong.",
+    answeredBy: 'Peer Mentor',
+  },
+  {
     id: 'qa-6',
     askedBy: 'Student #19',
     date: 'Sep 3',

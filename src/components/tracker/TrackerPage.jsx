@@ -78,7 +78,12 @@ export default function TrackerPage() {
   return (
     <div>
       <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <h1 className="text-xl font-bold text-ubc-blue">Your arrival tasks</h1>
+        <h1 className="flex items-center gap-2.5 text-xl font-bold text-ubc-blue">
+          Your arrival tasks
+          <span className="rounded-full bg-ubc-mist px-2.5 py-0.5 text-xs font-bold tracking-wide text-ubc-blue uppercase">
+            Week {canonTime === 'week-2' ? 2 : 1}
+          </span>
+        </h1>
         <p className="mt-0.5 mb-4 text-sm text-gray-600">
           Everything you need for your first weeks, in priority order — steps, peer notes, and
           sources included.
