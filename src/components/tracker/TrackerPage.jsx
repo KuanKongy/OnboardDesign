@@ -1,8 +1,11 @@
 import { useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { TASKS } from '../../data/tasks'
-import { groupTasks, getNextUp } from '../../lib/urgency'
+import { groupTasks, getNextUp, resolveTasks, GROUP_LABELS } from '../../lib/urgency'
 import { useTaskProgress } from '../../hooks/useTaskProgress'
+import { useCanonTime } from '../../hooks/useCanonTime'
 import { useToast } from '../../hooks/useToast'
+import PadlockIcon from '../layout/PadlockIcon'
 import ProgressBar from './ProgressBar'
 import FilterTabs from './FilterTabs'
 import TaskGroup from './TaskGroup'
@@ -10,6 +13,7 @@ import TaskCard from './TaskCard'
 
 export default function TrackerPage() {
   const { completedMap, toggle, doneCount, total, percent } = useTaskProgress()
+  const { canonTime } = useCanonTime()
   const { showToast } = useToast()
 
   const [filter, setFilter] = useState('all')
@@ -18,8 +22,11 @@ export default function TrackerPage() {
   const [nextUpId, setNextUpId] = useState(null)
   const timersRef = useRef([])
 
-  const groups = groupTasks(TASKS, completedMap)
-  const nextUp = getNextUp(TASKS, completedMap, finishingId)
+  // Effective priorities for the demo's canon time — the tracker always
+  // agrees with the latest issue that has "arrived".
+  const tasks = resolveTasks(TASKS, canonTime)
+  const groups = groupTasks(tasks, completedMap)
+  const nextUp = getNextUp(tasks, completedMap, finishingId)
 
   const handleToggleExpand = (id) => setExpandedId((cur) => (cur === id ? null : id))
 
@@ -38,7 +45,7 @@ export default function TrackerPage() {
     const t = setTimeout(() => {
       toggle(task.id)
       setFinishingId(null)
-      const next = getNextUp(TASKS, completedMap, task.id)
+      const next = getNextUp(tasks, completedMap, task.id)
       if (next) {
         showToast(`${task.title} — done ✓  Next up: ${next.title}`)
         setNextUpId(next.id)
@@ -80,18 +87,32 @@ export default function TrackerPage() {
         {nextUp && (
           <p className="mt-3 text-sm text-gray-700">
             <span className="font-semibold text-ubc-blue">Next up:</span> {nextUp.title}{' '}
-            <span className="text-gray-500">({nextUp.deadlineWindow.toLowerCase()})</span>
+            <span className="text-gray-500">({nextUp.deadlineWindow})</span>
           </p>
         )}
+        <p className="mt-2 text-xs text-gray-400">
+          Only you check things off — nothing here is tracked automatically.
+        </p>
       </div>
 
       <div className="mt-5">
         <FilterTabs active={filter} counts={counts} onChange={setFilter} />
       </div>
 
+      <Link
+        to="/ask"
+        className="mt-4 flex items-center gap-2.5 rounded-xl border border-ubc-pale bg-ubc-mist px-4 py-3 text-sm text-gray-700 transition-colors hover:border-ubc-link"
+      >
+        <PadlockIcon className="h-4 w-4 shrink-0 text-ubc-link" />
+        <span>
+          <span className="font-semibold text-ubc-blue">Stuck on something? Ask anonymously</span>{' '}
+          — no name, no account, no post history. Ever.
+        </span>
+      </Link>
+
       {(filter === 'all' || filter === 'urgent') && (
         <TaskGroup
-          title="Do this week"
+          title={GROUP_LABELS.doNow}
           count={groups.doNow.length}
           emptyMessage="No urgent tasks left — nice work. Check ‘Coming up’ for what's next."
         >
@@ -102,7 +123,7 @@ export default function TrackerPage() {
       )}
 
       {filter === 'all' && (
-        <TaskGroup title="Coming up" count={groups.comingUp.length}>
+        <TaskGroup title={GROUP_LABELS.comingUp} count={groups.comingUp.length}>
           {groups.comingUp.map((task) => (
             <TaskCard key={task.id} {...cardProps(task)} />
           ))}
@@ -111,7 +132,7 @@ export default function TrackerPage() {
 
       {(filter === 'all' || filter === 'done') && (
         <TaskGroup
-          title="Done"
+          title={GROUP_LABELS.done}
           count={groups.done.length}
           emptyMessage="Nothing checked off yet — tasks you complete will land here."
         >

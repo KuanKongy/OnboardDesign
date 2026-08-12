@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import PadlockIcon from './PadlockIcon'
 
 // The one deliberately POLISHED element (trust cue / R3).
 // Self-made text wordmark — official UBC crest/logo is trademarked.
@@ -10,6 +11,14 @@ export default function UbcHeader() {
         : 'text-ubc-pale hover:bg-white/10 hover:text-white'
     }`
 
+  // The ask entry reads as an ACTION (button + padlock), not a page name
+  const askClass = ({ isActive }) =>
+    `inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-semibold transition-colors ${
+      isActive
+        ? 'border-white bg-white text-ubc-blue'
+        : 'border-ubc-sky/70 bg-white/10 text-white hover:bg-white/20'
+    }`
+
   return (
     <header>
       <div className="bg-ubc-blue text-white">
@@ -19,11 +28,15 @@ export default function UbcHeader() {
             <span aria-hidden="true" className="h-5 w-px translate-y-0.5 self-center bg-ubc-sky" />
             <span className="text-lg font-medium tracking-wide">Arrival Guide</span>
           </NavLink>
-          <nav className="flex items-center gap-1" aria-label="Main">
+          <nav className="flex items-center gap-1.5" aria-label="Main">
             <NavLink to="/tracker" className={navClass}>
               My Tracker
             </NavLink>
-            <NavLink to="/ask" className={navClass}>
+            <NavLink to="/inbox" className={navClass}>
+              Newsletter
+            </NavLink>
+            <NavLink to="/ask" className={askClass}>
+              <PadlockIcon className="h-3.5 w-3.5" />
               Ask Anonymously
             </NavLink>
           </nav>

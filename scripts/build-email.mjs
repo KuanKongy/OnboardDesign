@@ -9,6 +9,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { TASKS } from '../src/data/tasks.js'
 import { ISSUES } from '../src/data/newsletters.js'
+import { SECTION_HEADINGS, CHANGE_LABELS, DROPPED_CLARIFIER } from '../src/lib/urgency.js'
 
 const TRACKER_URL = process.env.TRACKER_URL ?? 'https://onboard-design.vercel.app/#/tracker'
 
@@ -63,21 +64,21 @@ function badge(label, bg, color) {
   return `<span style="display:inline-block;padding:2px 8px;border-radius:10px;background:${bg};color:${color};font-family:${FONT};font-size:10px;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;">${label}</span>`
 }
 
-function changeRow(kind, taskId, note) {
+function changeRow({ type, taskId, note }) {
   const t = getTask(taskId)
   const badges = {
-    new: badge('New', '#DCFCE7', '#166534'),
-    updated: badge('Updated', '#FEF3C7', '#92400E'),
-    dropped: badge('Done with this', '#E5E7EB', '#4B5563'),
+    new: badge(CHANGE_LABELS.new, '#DCFCE7', '#166534'),
+    updated: badge(CHANGE_LABELS.updated, '#FEF3C7', '#92400E'),
+    dropped: badge(CHANGE_LABELS.dropped, '#E5E7EB', '#4B5563'),
   }
   const title =
-    kind === 'dropped'
+    type === 'dropped'
       ? `<span style="text-decoration:line-through;color:${C.muted};font-weight:bold;">${esc(t.title)}.</span>`
       : `<span style="font-weight:bold;color:${C.text};">${esc(t.title)}.</span>`
   return `
     <tr>
-      <td width="110" valign="top" style="padding:6px 0;">${badges[kind]}</td>
-      <td valign="top" style="padding:6px 0;font-family:${FONT};font-size:13px;color:${kind === 'dropped' ? C.muted : C.text};">
+      <td width="110" valign="top" style="padding:6px 0;">${badges[type]}</td>
+      <td valign="top" style="padding:6px 0;font-family:${FONT};font-size:13px;color:${type === 'dropped' ? C.muted : C.text};">
         ${title} ${esc(note)}
       </td>
     </tr>`
@@ -89,8 +90,8 @@ function sectionHeading(text) {
 }
 
 function renderIssue(issue) {
-  const { added, updated, dropped } = issue.changes
-  const hasChanges = added.length + updated.length + dropped.length > 0
+  const hasChanges = issue.changes.length > 0
+  const hasDropped = issue.changes.some((c) => c.type === 'dropped')
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -120,32 +121,43 @@ function renderIssue(issue) {
 
             <tr><td style="font-family:${FONT};font-size:14px;line-height:1.6;color:${C.text};">${esc(issue.intro)}</td></tr>
 
-            ${sectionHeading('Do these now — in this order')}
+            ${
+              hasChanges
+                ? `<!-- Update issues lead with the delta: tracker link + changes above the fold -->
+            <tr><td style="padding-top:14px;">
+              <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+                <td bgcolor="${C.blue}" style="border-radius:8px;">
+                  <a href="${TRACKER_URL}" style="display:inline-block;padding:10px 20px;font-family:${FONT};font-size:14px;font-weight:bold;color:#ffffff;text-decoration:none;">Open your Arrival Tracker &rarr;</a>
+                </td>
+              </tr></table>
+            </td></tr>
+            ${sectionHeading(esc(SECTION_HEADINGS.changes))}
+            <tr><td style="padding-top:8px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                ${issue.changes.map(changeRow).join('')}
+                ${
+                  hasDropped
+                    ? `<tr><td colspan="2" style="padding:8px 0 0 0;font-family:${FONT};font-size:12px;color:${C.faint};">${esc(DROPPED_CLARIFIER)}</td></tr>`
+                    : ''
+                }
+              </table>
+            </td></tr>`
+                : ''
+            }
+
+            ${sectionHeading(esc(SECTION_HEADINGS.urgent))}
             <tr><td>
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 ${issue.sections.urgent.map(urgentRow).join('')}
               </table>
             </td></tr>
 
-            ${sectionHeading('Coming up')}
+            ${sectionHeading(esc(SECTION_HEADINGS.comingUp))}
             <tr><td>
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 ${issue.sections.comingUp.map(comingUpRow).join('')}
               </table>
             </td></tr>
-
-            ${
-              hasChanges
-                ? `${sectionHeading('What changed since last issue')}
-            <tr><td style="padding-top:8px;">
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-                ${added.map((c) => changeRow('new', c.taskId, c.note)).join('')}
-                ${updated.map((c) => changeRow('updated', c.taskId, c.note)).join('')}
-                ${dropped.map((c) => changeRow('dropped', c.taskId, c.reason)).join('')}
-              </table>
-            </td></tr>`
-                : ''
-            }
 
             <!-- CTA -->
             <tr><td style="padding-top:28px;">
@@ -181,26 +193,29 @@ function renderIssueText(issue) {
   lines.push('')
   lines.push(issue.intro)
   lines.push('')
-  lines.push('DO THESE NOW — IN THIS ORDER')
+  if (issue.changes.length > 0) {
+    // Update issues lead with the delta, in the data's urgency order
+    lines.push(`Open your Arrival Tracker: ${TRACKER_URL}`)
+    lines.push('')
+    lines.push(SECTION_HEADINGS.changes.toUpperCase())
+    issue.changes.forEach((c) =>
+      lines.push(`[${CHANGE_LABELS[c.type].toUpperCase()}] ${getTask(c.taskId).title} — ${c.note}`)
+    )
+    if (issue.changes.some((c) => c.type === 'dropped')) lines.push(DROPPED_CLARIFIER)
+    lines.push('')
+  }
+  lines.push(SECTION_HEADINGS.urgent.toUpperCase())
   issue.sections.urgent.forEach((id, i) => {
     const t = getTask(id)
     lines.push(`${i + 1}. ${t.title} (${t.deadlineWindow} · ${t.estimatedTime})`)
     lines.push(`   ${t.summary}`)
   })
   lines.push('')
-  lines.push('COMING UP')
+  lines.push(SECTION_HEADINGS.comingUp.toUpperCase())
   issue.sections.comingUp.forEach((id) => {
     const t = getTask(id)
     lines.push(`- ${t.title} (${t.deadlineWindow})`)
   })
-  const { added, updated, dropped } = issue.changes
-  if (added.length + updated.length + dropped.length > 0) {
-    lines.push('')
-    lines.push('WHAT CHANGED SINCE LAST ISSUE')
-    added.forEach((c) => lines.push(`[NEW] ${getTask(c.taskId).title} — ${c.note}`))
-    updated.forEach((c) => lines.push(`[UPDATED] ${getTask(c.taskId).title} — ${c.note}`))
-    dropped.forEach((c) => lines.push(`[DONE WITH THIS] ${getTask(c.taskId).title} — ${c.reason}`))
-  }
   lines.push('')
   lines.push('Full steps, peer notes, and live updates for every task:')
   lines.push(`Open your Arrival Tracker: ${TRACKER_URL}`)

@@ -1,13 +1,14 @@
-import { useNavigate } from 'react-router-dom'
-import { ISSUES } from '../../data/newsletters'
+import { useNavigate, useOutletContext } from 'react-router-dom'
+import { getVisibleIssues } from '../../data/newsletters'
 import { KEYS, readJSON } from '../../lib/storage'
 
 export default function InboxPage() {
   const navigate = useNavigate()
+  const { canonTime } = useOutletContext()
   const readIssues = readJSON(KEYS.readIssues, [])
 
-  // Newest first, like a real inbox
-  const messages = [...ISSUES].reverse()
+  // Only issues that have "arrived" at the demo's canon time, newest first
+  const messages = [...getVisibleIssues(canonTime)].reverse()
 
   return (
     <div>

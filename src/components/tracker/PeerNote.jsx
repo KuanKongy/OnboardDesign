@@ -12,13 +12,13 @@ export default function PeerNote({ note }) {
             clipRule="evenodd"
           />
         </svg>
-        <span className="font-semibold text-ubc-blue">Verified peer note</span>
+        <span className="font-semibold text-ubc-blue">Peer tip</span>
         <span aria-hidden="true">·</span>
         <span>
           {note.author}, {note.program}
         </span>
         <span aria-hidden="true">·</span>
-        <span>verified {note.verifiedDate}</span>
+        <span>checked by UBC peer mentors, {note.verifiedDate}</span>
       </p>
     </div>
   )

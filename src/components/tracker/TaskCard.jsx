@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { URGENCY_META } from '../../lib/urgency'
+import PadlockIcon from '../layout/PadlockIcon'
 import TaskSteps from './TaskSteps'
 import PeerNote from './PeerNote'
 import SourceAttribution from './SourceAttribution'
@@ -83,7 +84,7 @@ export default function TaskCard({
                 <span
                   className={`rounded-full border px-2 py-0.5 text-[11px] font-bold tracking-wide uppercase ${meta.badgeClass}`}
                 >
-                  {meta.label}
+                  {task.deadlineWindow}
                 </span>
               )}
               {isNextUp && (
@@ -93,7 +94,7 @@ export default function TaskCard({
               )}
             </div>
             <p className="mt-0.5 text-sm text-gray-500">
-              {isDone ? `Done ${doneDate}` : `${task.deadlineWindow} · ${task.estimatedTime}`}
+              {isDone ? `Done ${doneDate}` : task.estimatedTime}
             </p>
           </div>
           <svg
@@ -111,6 +112,15 @@ export default function TaskCard({
             />
           </svg>
         </button>
+        {/* Always-visible ask entry — no need to expand the card first */}
+        <Link
+          to={`/ask?task=${task.id}`}
+          aria-label={`Ask about "${task.title}" anonymously`}
+          title="Ask about this anonymously"
+          className="shrink-0 rounded-lg p-2 text-gray-400 transition-colors hover:bg-ubc-mist hover:text-ubc-link"
+        >
+          <PadlockIcon className="h-4 w-4" />
+        </Link>
       </div>
 
       {/* Smooth expand/collapse without measuring heights */}
@@ -130,13 +140,7 @@ export default function TaskCard({
                 to={`/ask?task=${task.id}`}
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-ubc-link hover:underline"
               >
-                <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path
-                    fillRule="evenodd"
-                    d="M10 2a4 4 0 00-4 4v2H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-1V6a4 4 0 00-4-4zm2 6V6a2 2 0 10-4 0v2h4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <PadlockIcon className="h-4 w-4" />
                 Ask a question anonymously
               </Link>
             </div>

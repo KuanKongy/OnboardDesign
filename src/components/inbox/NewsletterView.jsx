@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getIssue } from '../../data/newsletters'
 import { getTask } from '../../data/tasks'
 import { KEYS, readJSON, writeJSON } from '../../lib/storage'
+import { SECTION_HEADINGS, DROPPED_CLARIFIER } from '../../lib/urgency'
 import { useTaskProgress } from '../../hooks/useTaskProgress'
 import NewsletterTaskRow from './NewsletterTaskRow'
 import ChangeBadge from './ChangeBadge'
@@ -36,8 +37,8 @@ export default function NewsletterView() {
     )
   }
 
-  const { added, updated, dropped } = issue.changes
-  const hasChanges = added.length > 0 || updated.length > 0 || dropped.length > 0
+  const hasChanges = issue.changes.length > 0
+  const hasDropped = issue.changes.some((c) => c.type === 'dropped')
 
   return (
     <div>
@@ -82,7 +83,42 @@ export default function NewsletterView() {
           <div className="px-6 py-5">
             <p className="text-sm leading-relaxed text-gray-700">{issue.intro}</p>
 
-            <SectionHeading>Do these now — in this order</SectionHeading>
+            {/* Update issues lead with the delta: tracker link + what changed
+                sit above the fold, ordered by urgency (not change type). */}
+            {hasChanges && (
+              <>
+                <p className="mt-4">
+                  <Link
+                    to="/tracker"
+                    className="inline-block rounded-lg bg-ubc-blue px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-ubc-link"
+                  >
+                    Open your Arrival Tracker →
+                  </Link>
+                </p>
+
+                <SectionHeading>{SECTION_HEADINGS.changes}</SectionHeading>
+                <div className="space-y-3 pt-1">
+                  {issue.changes.map(({ type, taskId, note }) => (
+                    <div key={taskId} className="flex items-start gap-2.5">
+                      <ChangeBadge type={type} />
+                      <p
+                        className={`text-sm ${type === 'dropped' ? 'text-gray-500' : 'text-gray-700'}`}
+                      >
+                        <span
+                          className={`font-semibold ${type === 'dropped' ? 'line-through' : ''}`}
+                        >
+                          {getTask(taskId).title}.
+                        </span>{' '}
+                        {note}
+                      </p>
+                    </div>
+                  ))}
+                  {hasDropped && <p className="text-xs text-gray-400">{DROPPED_CLARIFIER}</p>}
+                </div>
+              </>
+            )}
+
+            <SectionHeading>{SECTION_HEADINGS.urgent}</SectionHeading>
             <div className="divide-y divide-gray-100">
               {issue.sections.urgent.map((id, i) => (
                 <NewsletterTaskRow
@@ -94,45 +130,12 @@ export default function NewsletterView() {
               ))}
             </div>
 
-            <SectionHeading>Coming up</SectionHeading>
+            <SectionHeading>{SECTION_HEADINGS.comingUp}</SectionHeading>
             <div className="divide-y divide-gray-100">
               {issue.sections.comingUp.map((id) => (
                 <NewsletterTaskRow key={id} task={getTask(id)} done={Boolean(completedMap[id])} />
               ))}
             </div>
-
-            {hasChanges && (
-              <>
-                <SectionHeading>What changed since last issue</SectionHeading>
-                <div className="space-y-3 pt-1">
-                  {added.map(({ taskId, note }) => (
-                    <div key={taskId} className="flex items-start gap-2.5">
-                      <ChangeBadge type="new" />
-                      <p className="text-sm text-gray-700">
-                        <span className="font-semibold">{getTask(taskId).title}.</span> {note}
-                      </p>
-                    </div>
-                  ))}
-                  {updated.map(({ taskId, note }) => (
-                    <div key={taskId} className="flex items-start gap-2.5">
-                      <ChangeBadge type="updated" />
-                      <p className="text-sm text-gray-700">
-                        <span className="font-semibold">{getTask(taskId).title}.</span> {note}
-                      </p>
-                    </div>
-                  ))}
-                  {dropped.map(({ taskId, reason }) => (
-                    <div key={taskId} className="flex items-start gap-2.5">
-                      <ChangeBadge type="dropped" />
-                      <p className="text-sm text-gray-500">
-                        <span className="font-semibold line-through">{getTask(taskId).title}.</span>{' '}
-                        {reason}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
 
             {/* CTA — the study path from newsletter into the tracker */}
             <div className="mt-7 rounded-lg bg-ubc-mist px-5 py-5 text-center">

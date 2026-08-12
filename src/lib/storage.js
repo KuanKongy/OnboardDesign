@@ -4,6 +4,7 @@
 export const KEYS = {
   completed: 'arrival:v1:completed', // { [taskId]: isoTimestamp }
   readIssues: 'arrival:v1:readIssues', // string[] of issue ids
+  canonTime: 'arrival:v1:canonTime', // 'week-1' | 'week-2' demo moment
 }
 
 export function readJSON(key, fallback) {

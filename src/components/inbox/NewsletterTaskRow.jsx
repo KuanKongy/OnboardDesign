@@ -19,7 +19,7 @@ export default function NewsletterTaskRow({ task, index, done }) {
           {task.title}
           {done && (
             <span className="ml-2 align-middle text-xs font-medium text-green-700 no-underline">
-              ✓ already done
+              ✓ you checked this off
             </span>
           )}
         </p>

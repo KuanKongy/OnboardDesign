@@ -8,8 +8,14 @@ import { resetAll } from '../../lib/storage'
 export default function PageShell() {
   const [searchParams] = useSearchParams()
 
-  // Invisible researcher affordance: opening /#/tracker?reset=1 clears all
-  // participant state between sessions. Nothing in the UI exposes it.
+  const handleReset = () => {
+    resetAll()
+    window.location.hash = '#/tracker'
+    window.location.reload()
+  }
+
+  // URL affordance kept for convenience: /#/tracker?reset=1 also clears all
+  // demo state (same as the footer button).
   useEffect(() => {
     if (searchParams.get('reset') === '1') {
       resetAll()
@@ -25,6 +31,15 @@ export default function PageShell() {
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6">
         <Outlet />
       </main>
+      <footer className="pb-5 text-center">
+        <button
+          onClick={handleReset}
+          title="Clear all demo data: completed tasks, read mail, and demo time"
+          className="cursor-pointer text-xs text-gray-400 underline hover:text-gray-600"
+        >
+          Demo: Reset all data
+        </button>
+      </footer>
       <Toast />
     </div>
   )
