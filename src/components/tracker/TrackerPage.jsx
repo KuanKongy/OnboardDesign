@@ -57,7 +57,10 @@ export default function TrackerPage() {
       if (next) {
         showToast(`${task.title} — done ✓  Next up: ${next.title}`, {
           label: 'Undo',
-          onClick: () => toggle(task.id),
+          onClick: () => {
+            toggle(task.id)
+            setNextUpId(null) // the restored task outranks the glowing one
+          },
         })
         setNextUpId(next.id)
         const t2 = setTimeout(() => setNextUpId(null), 2300)

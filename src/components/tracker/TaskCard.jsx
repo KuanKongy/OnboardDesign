@@ -50,7 +50,7 @@ export default function TaskCard({
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <span
-                className={`font-semibold text-gray-900 ${checked ? 'text-gray-400 line-through' : ''}`}
+                className={`font-semibold ${checked ? 'text-gray-400 line-through' : 'text-gray-900'}`}
               >
                 {task.title}
               </span>

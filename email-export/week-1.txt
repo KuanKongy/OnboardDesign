@@ -17,8 +17,10 @@ DO THIS WEEK — IN THIS ORDER
    Your transit card for buses, SkyTrain and SeaBus — your student U-Pass loads onto it.
 
 COMING UP
-- Confirm your iMED temporary health coverage (By end of week 2)
-- Apply for BC MSP health insurance (ASAP — wait clock running)
+- Confirm your iMED temporary health coverage (By end of week 2 · ~15 min)
+  You are already enrolled — iMED is not MSP, it is what covers you while you wait for MSP to start.
+- Apply for BC MSP health insurance (ASAP — wait clock running · ~30 min)
+  BC's public health plan. The 3-month wait for coverage only starts once you apply, so apply now — iMED covers you until it kicks in.
 
 Full steps, peer notes, and live updates for every task:
 Open your Arrival Tracker: https://onboard-design.vercel.app/#/tracker

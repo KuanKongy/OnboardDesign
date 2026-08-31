@@ -1,8 +1,7 @@
 import { useEffect } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { getIssue } from '../../data/newsletters'
+import { Link, useNavigate, useOutletContext, useParams } from 'react-router-dom'
+import { getVisibleIssues } from '../../data/newsletters'
 import { getTask } from '../../data/tasks'
-import { KEYS, readJSON, writeJSON } from '../../lib/storage'
 import { SECTION_HEADINGS, DROPPED_CLARIFIER } from '../../lib/urgency'
 import { useTaskProgress } from '../../hooks/useTaskProgress'
 import NewsletterTaskRow from './NewsletterTaskRow'
@@ -19,15 +18,16 @@ function SectionHeading({ children }) {
 export default function NewsletterView() {
   const { issueId } = useParams()
   const navigate = useNavigate()
-  const issue = getIssue(issueId)
+  const { canonTime, markRead } = useOutletContext()
+  // Only issues that have "arrived" at the demo's canon time are readable —
+  // a direct link to a future issue shouldn't show it (or mark it read).
+  const issue = getVisibleIssues(canonTime).find((i) => i.id === issueId)
   const { completedMap } = useTaskProgress()
 
-  // Opening the message marks it read (inbox bold state clears)
+  // Opening the message marks it read (inbox bold state + badge clear)
   useEffect(() => {
-    if (!issue) return
-    const read = readJSON(KEYS.readIssues, [])
-    if (!read.includes(issue.id)) writeJSON(KEYS.readIssues, [...read, issue.id])
-  }, [issue])
+    if (issue) markRead(issue.id)
+  }, [issue, markRead])
 
   if (!issue) {
     return (

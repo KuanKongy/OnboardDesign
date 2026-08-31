@@ -21,8 +21,10 @@ DO THIS WEEK — IN THIS ORDER
    You need a SIN before you can be paid for any job in Canada — it is free and takes one visit.
 
 COMING UP
-- Open a Canadian bank account (First 2 weeks)
-- Get a BC Services Card or BCID (photo ID) (Within 2 months)
+- Open a Canadian bank account (First 2 weeks · ~1 hour)
+  A no-fee student account lets you pay rent, get paid, and stop paying foreign card fees — and phone plans are cheaper with one.
+- Get a BC Services Card or BCID (photo ID) (Within 2 months · ~45 min + travel)
+  Local photo ID means you can leave your passport safely at home.
 
 Full steps, peer notes, and live updates for every task:
 Open your Arrival Tracker: https://onboard-design.vercel.app/#/tracker

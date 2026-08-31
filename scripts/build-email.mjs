@@ -7,7 +7,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { TASKS } from '../src/data/tasks.js'
+import { getTask } from '../src/data/tasks.js'
 import { ISSUES } from '../src/data/newsletters.js'
 import { SECTION_HEADINGS, CHANGE_LABELS, DROPPED_CLARIFIER } from '../src/lib/urgency.js'
 
@@ -27,7 +27,6 @@ const C = {
 }
 const FONT = 'Arial, Helvetica, sans-serif'
 
-const getTask = (id) => TASKS.find((t) => t.id === id)
 const esc = (s) =>
   s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
 
@@ -55,7 +54,8 @@ function comingUpRow(id) {
       <td width="34" valign="top" align="center" style="padding:8px 0;font-family:${FONT};font-size:14px;color:${C.sky};">&bull;</td>
       <td valign="top" style="padding:8px 0;border-bottom:1px solid ${C.border};font-family:${FONT};">
         <span style="font-size:14px;font-weight:bold;color:${C.text};">${esc(t.title)}</span><br>
-        <span style="font-size:13px;color:${C.muted};">${esc(t.summary)}</span>
+        <span style="font-size:13px;color:${C.muted};">${esc(t.summary)}</span><br>
+        <span style="font-size:12px;color:${C.faint};">${esc(t.deadlineWindow)} &middot; ${esc(t.estimatedTime)}</span>
       </td>
     </tr>`
 }
@@ -214,7 +214,8 @@ function renderIssueText(issue) {
   lines.push(SECTION_HEADINGS.comingUp.toUpperCase())
   issue.sections.comingUp.forEach((id) => {
     const t = getTask(id)
-    lines.push(`- ${t.title} (${t.deadlineWindow})`)
+    lines.push(`- ${t.title} (${t.deadlineWindow} · ${t.estimatedTime})`)
+    lines.push(`  ${t.summary}`)
   })
   lines.push('')
   lines.push('Full steps, peer notes, and live updates for every task:')

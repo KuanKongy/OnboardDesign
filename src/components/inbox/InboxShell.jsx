@@ -4,6 +4,7 @@ import ScrollToTop from '../layout/ScrollToTop'
 import { getVisibleIssues } from '../../data/newsletters'
 import { resetAll } from '../../lib/storage'
 import { useCanonTime } from '../../hooks/useCanonTime'
+import { useReadIssues } from '../../hooks/useReadIssues'
 
 // Deliberately generic email-client chrome (not a Gmail clone) — the reader
 // should read this as "my email app", nothing more. The top bar also carries
@@ -11,7 +12,12 @@ import { useCanonTime } from '../../hooks/useCanonTime'
 // ("canon time"), and a full state reset between demo participants.
 export default function InboxShell() {
   const { canonTime, setCanonTime } = useCanonTime()
-  const inboxCount = getVisibleIssues(canonTime).length
+  const { readIssues, markRead } = useReadIssues()
+  // Unread, not total — like a real mail client, the badge disappears once
+  // everything arrived so far has been opened.
+  const unreadCount = getVisibleIssues(canonTime).filter(
+    (issue) => !readIssues.includes(issue.id)
+  ).length
 
   // Reset lands on the week-1 inbox — the first page a demo participant sees
   const handleReset = () => {
@@ -82,7 +88,12 @@ export default function InboxShell() {
           </div>
           <nav className="space-y-1 text-sm text-gray-600">
             <div className="flex items-center justify-between rounded-lg bg-gray-100 px-3 py-1.5 font-semibold text-gray-900">
-              Inbox <span className="text-xs">{inboxCount}</span>
+              Inbox
+              {unreadCount > 0 && (
+                <span className="text-xs" aria-label={`${unreadCount} unread`}>
+                  {unreadCount}
+                </span>
+              )}
             </div>
             <div className="px-3 py-1.5">Starred</div>
             <div className="px-3 py-1.5">Sent</div>
@@ -90,7 +101,7 @@ export default function InboxShell() {
           </nav>
         </aside>
         <main className="min-w-0 flex-1">
-          <Outlet context={{ canonTime }} />
+          <Outlet context={{ canonTime, readIssues, markRead }} />
         </main>
       </div>
       <Toast />

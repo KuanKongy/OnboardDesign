@@ -18,7 +18,8 @@ export default function NewsletterTaskRow({ task, index, done }) {
         <p className={`font-semibold ${done ? 'text-gray-400 line-through' : 'text-gray-900'}`}>
           {task.title}
           {done && (
-            <span className="ml-2 align-middle text-xs font-medium text-green-700 no-underline">
+            // inline-block: the parent's line-through must not strike this
+            <span className="ml-2 inline-block align-middle text-xs font-medium text-green-700">
               ✓ you checked this off
             </span>
           )}
