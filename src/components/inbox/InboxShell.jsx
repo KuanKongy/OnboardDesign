@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import Toast from '../layout/Toast'
 import ScrollToTop from '../layout/ScrollToTop'
+import ConfirmResetModal from '../layout/ConfirmResetModal'
 import { getVisibleIssues } from '../../data/newsletters'
 import { resetAll } from '../../lib/storage'
 import { useCanonTime } from '../../hooks/useCanonTime'
@@ -19,9 +21,10 @@ export default function InboxShell() {
     (issue) => !readIssues.includes(issue.id)
   ).length
 
+  const [resetOpen, setResetOpen] = useState(false)
+
   // Reset lands on the week-1 inbox — the first page a demo participant sees
   const handleReset = () => {
-    if (!window.confirm('Reset all demo data? This clears completed tasks, checked steps, read mail, and the demo time.')) return
     resetAll()
     window.location.hash = '#/inbox'
     window.location.reload()
@@ -73,7 +76,7 @@ export default function InboxShell() {
             )}
           </div>
           <button
-            onClick={handleReset}
+            onClick={() => setResetOpen(true)}
             title="Clear all demo data: completed tasks, read mail, and demo time"
             className="cursor-pointer text-xs whitespace-nowrap text-gray-400 underline hover:text-gray-600"
           >
@@ -104,6 +107,11 @@ export default function InboxShell() {
           <Outlet context={{ canonTime, readIssues, markRead }} />
         </main>
       </div>
+      <ConfirmResetModal
+        open={resetOpen}
+        onConfirm={handleReset}
+        onCancel={() => setResetOpen(false)}
+      />
       <Toast />
     </div>
   )

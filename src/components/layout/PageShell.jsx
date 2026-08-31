@@ -1,16 +1,17 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Outlet, useSearchParams } from 'react-router-dom'
 import UbcHeader from './UbcHeader'
 import Toast from './Toast'
 import ScrollToTop from './ScrollToTop'
+import ConfirmResetModal from './ConfirmResetModal'
 import { resetAll } from '../../lib/storage'
 
 export default function PageShell() {
   const [searchParams] = useSearchParams()
+  const [resetOpen, setResetOpen] = useState(false)
 
   // Clears state and reloads in place — no navigation away from this page
   const handleReset = () => {
-    if (!window.confirm('Reset all demo data? This clears completed tasks, checked steps, read mail, and the demo time.')) return
     resetAll()
     window.location.reload()
   }
@@ -34,13 +35,18 @@ export default function PageShell() {
       </main>
       <footer className="pb-5 text-center">
         <button
-          onClick={handleReset}
+          onClick={() => setResetOpen(true)}
           title="Clear all demo data: completed tasks, read mail, and demo time"
           className="cursor-pointer text-xs text-gray-400 underline hover:text-gray-600"
         >
           Demo: Reset all data
         </button>
       </footer>
+      <ConfirmResetModal
+        open={resetOpen}
+        onConfirm={handleReset}
+        onCancel={() => setResetOpen(false)}
+      />
       <Toast />
     </div>
   )
