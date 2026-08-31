@@ -10,6 +10,7 @@ export default function PageShell() {
 
   // Clears state and reloads in place — no navigation away from this page
   const handleReset = () => {
+    if (!window.confirm('Reset all demo data? This clears completed tasks, checked steps, read mail, and the demo time.')) return
     resetAll()
     window.location.reload()
   }

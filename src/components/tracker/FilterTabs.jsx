@@ -1,6 +1,6 @@
 const TABS = [
   { key: 'all', label: 'All' },
-  { key: 'urgent', label: 'This week' },
+  { key: 'urgent', label: 'To do' },
   { key: 'done', label: 'Done' },
 ]
 

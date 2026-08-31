@@ -22,13 +22,13 @@ export default function UbcHeader() {
   return (
     <header>
       <div className="bg-ubc-blue text-white">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
+        <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3">
           <NavLink to="/tracker" className="flex items-baseline gap-2.5">
             <span className="text-xl font-extrabold tracking-widest">UBC</span>
             <span aria-hidden="true" className="h-5 w-px translate-y-0.5 self-center bg-ubc-sky" />
             <span className="text-lg font-medium tracking-wide">Arrival Guide</span>
           </NavLink>
-          <nav className="flex items-center gap-1.5" aria-label="Main">
+          <nav className="flex flex-wrap items-center gap-1.5" aria-label="Main">
             <NavLink to="/tracker" className={navClass}>
               My Tracker
             </NavLink>

@@ -15,6 +15,7 @@ export default function InboxShell() {
 
   // Reset lands on the week-1 inbox — the first page a demo participant sees
   const handleReset = () => {
+    if (!window.confirm('Reset all demo data? This clears completed tasks, checked steps, read mail, and the demo time.')) return
     resetAll()
     window.location.hash = '#/inbox'
     window.location.reload()
@@ -36,7 +37,7 @@ export default function InboxShell() {
   return (
     <div className="flex min-h-screen flex-col bg-gray-100">
       <ScrollToTop />
-      <div className="flex items-center gap-3 border-b border-gray-300 bg-white px-4 py-2.5">
+      <div className="flex items-center gap-2 border-b border-gray-300 bg-white px-3 py-2.5 sm:gap-3 sm:px-4">
         <svg className="h-6 w-6 shrink-0 text-gray-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M3 5a2 2 0 00-2 2v10a2 2 0 002 2h18a2 2 0 002-2V7a2 2 0 00-2-2H3zm18 2v.4l-9 5.6-9-5.6V7h18zM3 9.7l8.5 5.3a1 1 0 001 0L21 9.7V17H3V9.7z" />
         </svg>
@@ -44,12 +45,13 @@ export default function InboxShell() {
         <div className="ml-4 hidden flex-1 items-center rounded-lg bg-gray-100 px-3 py-1.5 text-sm text-gray-400 sm:flex">
           Search mail
         </div>
-        <div className="ml-auto flex shrink-0 items-center gap-3">
+        <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
           <Link
             to="/tracker"
             className="whitespace-nowrap text-sm font-medium text-ubc-link hover:underline"
           >
-            ← Back to Arrival Guide
+            ← <span className="hidden sm:inline">Back to Arrival Guide</span>
+            <span className="sm:hidden">Back</span>
           </Link>
           <div
             role="group"
@@ -69,7 +71,7 @@ export default function InboxShell() {
             title="Clear all demo data: completed tasks, read mail, and demo time"
             className="cursor-pointer text-xs whitespace-nowrap text-gray-400 underline hover:text-gray-600"
           >
-            Reset demo
+            Reset<span className="hidden sm:inline"> demo</span>
           </button>
         </div>
       </div>

@@ -19,7 +19,7 @@ export default function InboxPage() {
             <li key={issue.id}>
               <button
                 onClick={() => navigate(`/inbox/${issue.id}`)}
-                className="flex w-full cursor-pointer items-baseline gap-3 px-4 py-3.5 text-left transition-colors hover:bg-ubc-mist/60"
+                className="flex w-full cursor-pointer flex-wrap items-baseline gap-x-3 gap-y-0.5 px-4 py-3.5 text-left transition-colors hover:bg-ubc-mist/60 sm:flex-nowrap"
               >
                 {unread && (
                   <span
@@ -28,13 +28,13 @@ export default function InboxPage() {
                   />
                 )}
                 <span
-                  className={`w-36 shrink-0 truncate text-sm ${
+                  className={`min-w-0 flex-1 truncate text-sm sm:w-36 sm:flex-none ${
                     unread ? 'font-bold text-gray-900' : 'text-gray-600'
                   }`}
                 >
                   UBC Arrival Guide
                 </span>
-                <span className="min-w-0 flex-1 truncate text-sm">
+                <span className="order-last w-full min-w-0 truncate text-sm sm:order-none sm:w-auto sm:flex-1">
                   <span className={unread ? 'font-bold text-gray-900' : 'text-gray-700'}>
                     {issue.subject}
                   </span>

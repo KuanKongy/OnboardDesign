@@ -46,3 +46,11 @@
 .animate-next-up {
   animation: next-up-glow 2.2s ease-in-out;
 }
+
+/* Respect reduced-motion preferences — both animations are decorative */
+@media (prefers-reduced-motion: reduce) {
+  .animate-check-pop,
+  .animate-next-up {
+    animation: none;
+  }
+}

@@ -41,6 +41,9 @@ export default function AskPage() {
   const [draft, setDraft] = useState('')
   const [query, setQuery] = useState('')
   const [openId, setOpenId] = useState(null)
+  // Session-only optimistic view of what YOU just asked (never persisted —
+  // the board itself stays Wizard-of-Oz and stores nothing).
+  const [pending, setPending] = useState([])
   const { showToast } = useToast()
 
   const topicTask = getTask(searchParams.get('task'))
@@ -77,6 +80,7 @@ export default function AskPage() {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!draft.trim()) return
+    setPending((cur) => [{ id: `pending-${cur.length + 1}`, question: draft.trim(), tags }, ...cur])
     setDraft('')
     setTags([])
     setTagDraft('')
@@ -218,7 +222,10 @@ export default function AskPage() {
                   <button
                     onClick={() => setOpenId(open ? null : post.id)}
                     aria-expanded={open}
-                    className="flex w-full cursor-pointer items-center justify-between gap-3 px-4 py-3 text-left"
+                    aria-controls={`qa-answer-${post.id}`}
+                    className={`flex w-full cursor-pointer items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-gray-50 ${
+                      open ? 'rounded-t-xl' : 'rounded-xl'
+                    }`}
                   >
                     <span className="text-sm font-medium text-gray-900">{post.question}</span>
                     <svg
@@ -237,9 +244,11 @@ export default function AskPage() {
                     </svg>
                   </button>
                   {open && (
-                    <div className="border-t border-gray-100 px-4 py-3">
-                      <p className="text-sm text-gray-700">{post.answer}</p>
-                      <VerifiedLine answeredBy={post.answeredBy} />
+                    <div id={`qa-answer-${post.id}`} className="border-t border-gray-100 px-4 py-3">
+                      <div className="border-l-2 border-ubc-pale pl-3">
+                        <p className="text-sm text-gray-700">{post.answer}</p>
+                        <VerifiedLine answeredBy={post.answeredBy} />
+                      </div>
                     </div>
                   )}
                 </li>
@@ -252,6 +261,34 @@ export default function AskPage() {
       <h2 className="mt-6 mb-2 text-xs font-bold tracking-wider text-gray-500 uppercase">
         Recent questions
       </h2>
+      {pending.length > 0 && (
+        <ul className="mb-3 space-y-3">
+          {pending.map((p) => (
+            <li
+              key={p.id}
+              className="rounded-xl border border-dashed border-ubc-pale bg-white p-4 shadow-sm"
+            >
+              <p className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                <span className="rounded-full bg-ubc-mist px-2 py-0.5 font-medium text-ubc-blue">
+                  Your question
+                </span>
+                {p.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-600"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </p>
+              <p className="mt-2 font-medium text-gray-900">{p.question}</p>
+              <p className="mt-1.5 text-xs font-medium text-gray-400">
+                Pending — a verified answer usually arrives within 24 hours.
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
       {recent.length === 0 ? (
         <p className="rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-500">
           No questions match — ask yours above and a peer mentor will answer within a day.
@@ -275,7 +312,7 @@ export default function AskPage() {
                 </p>
                 <p className="mt-2 font-medium text-gray-900">{post.question}</p>
                 {/* The answer reads as a reply in a thread, not a headline */}
-                <div className="mt-3 ml-3 border-l-2 border-ubc-pale pl-3">
+                <div className="mt-3 border-l-2 border-ubc-pale pl-3">
                   <p className="text-sm text-gray-700">{post.answer}</p>
                   <VerifiedLine answeredBy={post.answeredBy} />
                 </div>

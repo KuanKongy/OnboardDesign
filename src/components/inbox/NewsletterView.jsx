@@ -60,7 +60,9 @@ export default function NewsletterView() {
         <h1 className="text-lg font-bold text-gray-900">{issue.subject}</h1>
         <p className="mt-1 text-sm text-gray-500">
           <span className="font-medium text-gray-700">UBC Arrival Guide</span>{' '}
-          &lt;arrival-guide@ubc.ca&gt; · to you@student.ubc.ca · {issue.sentDate}
+          <span className="whitespace-nowrap">&lt;arrival-guide@ubc.ca&gt;</span>
+          <span className="hidden sm:inline"> · </span>
+          <span className="block sm:inline">to you@student.ubc.ca · {issue.sentDate}</span>
         </p>
       </div>
 
@@ -80,7 +82,7 @@ export default function NewsletterView() {
           </div>
           <div className="h-1 bg-ubc-sky" />
 
-          <div className="px-6 py-5">
+          <div className="px-4 py-5 sm:px-6">
             <p className="text-sm leading-relaxed text-gray-700">{issue.intro}</p>
 
             {/* Update issues lead with the delta: tracker link + what changed

@@ -1,40 +1,11 @@
 import { Link } from 'react-router-dom'
 import { URGENCY_META, OVERDUE_META } from '../../lib/urgency'
+import { stepKey } from '../../hooks/useStepProgress'
 import AskIcon from '../layout/AskIcon'
+import Checkbox from './Checkbox'
 import TaskSteps from './TaskSteps'
 import PeerNote from './PeerNote'
 import SourceAttribution from './SourceAttribution'
-
-function Checkbox({ checked, animating, label, onToggle }) {
-  return (
-    <button
-      role="checkbox"
-      aria-checked={checked}
-      aria-label={label}
-      onClick={onToggle}
-      className={`flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-md border-2 transition-colors ${
-        checked
-          ? 'border-ubc-link bg-ubc-link text-white'
-          : 'border-gray-300 bg-white hover:border-ubc-link'
-      }`}
-    >
-      {checked && (
-        <svg
-          className={`h-3.5 w-3.5 ${animating ? 'animate-check-pop' : ''}`}
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            fillRule="evenodd"
-            d="M16.7 5.3a1 1 0 010 1.4l-8 8a1 1 0 01-1.4 0l-4-4a1 1 0 111.4-1.4L8 12.6l7.3-7.3a1 1 0 011.4 0z"
-            clipRule="evenodd"
-          />
-        </svg>
-      )}
-    </button>
-  )
-}
 
 export default function TaskCard({
   task,
@@ -45,8 +16,11 @@ export default function TaskCard({
   completedAt,
   onToggleExpand,
   onToggleDone,
+  stepMap,
+  onToggleStep,
 }) {
   const checked = isDone || isFinishing
+  const stepsDone = task.steps.filter((_, i) => stepMap[stepKey(task.id, i)]).length
   const meta = task.overdue ? OVERDUE_META : URGENCY_META[task.urgency]
   const bodyId = `task-body-${task.id}`
 
@@ -99,6 +73,7 @@ export default function TaskCard({
                 : task.overdue
                   ? `${task.estimatedTime} · was due: ${task.deadlineWindow.toLowerCase()}`
                   : task.estimatedTime}
+              {!isDone && stepsDone > 0 && ` · ${stepsDone} of ${task.steps.length} steps`}
             </p>
           </div>
           <svg
@@ -127,7 +102,12 @@ export default function TaskCard({
       >
         <div className="overflow-hidden">
           <div className="space-y-4 border-t border-gray-100 px-4 pt-4 pb-4">
-            <TaskSteps steps={task.steps} />
+            <TaskSteps
+              steps={task.steps}
+              taskId={task.id}
+              stepMap={stepMap}
+              onToggleStep={onToggleStep}
+            />
             <PeerNote note={task.peerNote} />
             <div className="flex flex-wrap items-center justify-between gap-2 border-t border-gray-100 pt-3">
               <SourceAttribution source={task.source} />

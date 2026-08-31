@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { TASKS } from '../../data/tasks'
 import { groupTasks, getNextUp, resolveTasks, GROUP_LABELS } from '../../lib/urgency'
 import { useTaskProgress } from '../../hooks/useTaskProgress'
+import { useStepProgress } from '../../hooks/useStepProgress'
 import { useCanonTime } from '../../hooks/useCanonTime'
 import { useToast } from '../../hooks/useToast'
 import AskIcon from '../layout/AskIcon'
@@ -13,6 +14,7 @@ import TaskCard from './TaskCard'
 
 export default function TrackerPage() {
   const { completedMap, toggle, doneCount, total, percent } = useTaskProgress()
+  const { stepMap, toggleStep } = useStepProgress()
   const { canonTime } = useCanonTime()
   const { showToast } = useToast()
 
@@ -21,6 +23,12 @@ export default function TrackerPage() {
   const [finishingId, setFinishingId] = useState(null)
   const [nextUpId, setNextUpId] = useState(null)
   const timersRef = useRef([])
+
+  // Clear any in-flight completion timers if the page unmounts mid-animation
+  useEffect(() => {
+    const timers = timersRef.current
+    return () => timers.forEach(clearTimeout)
+  }, [])
 
   // Effective priorities for the demo's canon time — the tracker always
   // agrees with the latest issue that has "arrived".
@@ -47,12 +55,18 @@ export default function TrackerPage() {
       setFinishingId(null)
       const next = getNextUp(tasks, completedMap, task.id)
       if (next) {
-        showToast(`${task.title} — done ✓  Next up: ${next.title}`)
+        showToast(`${task.title} — done ✓  Next up: ${next.title}`, {
+          label: 'Undo',
+          onClick: () => toggle(task.id),
+        })
         setNextUpId(next.id)
         const t2 = setTimeout(() => setNextUpId(null), 2300)
         timersRef.current.push(t2)
       } else {
-        showToast(`${task.title} — done ✓  That's everything on your list!`)
+        showToast(`${task.title} — done ✓  That's everything on your list!`, {
+          label: 'Undo',
+          onClick: () => toggle(task.id),
+        })
       }
     }, 550)
     timersRef.current.push(t)
@@ -73,6 +87,8 @@ export default function TrackerPage() {
     completedAt: completedMap[task.id],
     onToggleExpand: handleToggleExpand,
     onToggleDone: handleToggleDone,
+    stepMap,
+    onToggleStep: toggleStep,
   })
 
   return (
@@ -112,16 +128,18 @@ export default function TrackerPage() {
         <FilterTabs active={filter} counts={counts} onChange={setFilter} />
       </div>
 
-      <Link
-        to="/ask"
-        className="mt-4 flex items-center gap-2.5 rounded-xl border border-ubc-pale bg-ubc-mist px-4 py-3 text-sm text-gray-700 transition-colors hover:border-ubc-link"
-      >
-        <AskIcon className="h-4 w-4 shrink-0 text-ubc-link" />
-        <span>
-          <span className="font-semibold text-ubc-blue">Stuck on something? Ask anonymously</span>{' '}
-          — no name, no account, no post history. Ever.
-        </span>
-      </Link>
+      {filter !== 'done' && (
+        <Link
+          to="/ask"
+          className="mt-4 flex items-center gap-2.5 rounded-xl border border-ubc-pale bg-ubc-mist px-4 py-3 text-sm text-gray-700 transition-colors hover:border-ubc-link"
+        >
+          <AskIcon className="h-4 w-4 shrink-0 text-ubc-link" />
+          <span>
+            <span className="font-semibold text-ubc-blue">Stuck on something? Ask anonymously</span>{' '}
+            — no name, no account, no post history. Ever.
+          </span>
+        </Link>
+      )}
 
       {(filter === 'all' || filter === 'urgent') && (
         <TaskGroup
@@ -144,7 +162,11 @@ export default function TrackerPage() {
       )}
 
       {filter === 'all' && (
-        <TaskGroup title={GROUP_LABELS.comingUp} count={groups.comingUp.length}>
+        <TaskGroup
+          title={GROUP_LABELS.comingUp}
+          count={groups.comingUp.length}
+          emptyMessage="Nothing scheduled further out — everything left is listed above."
+        >
           {groups.comingUp.map((task) => (
             <TaskCard key={task.id} {...cardProps(task)} />
           ))}
