@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="6" fill="#002145"/>
+  <!-- paper plane with fold -->
+  <path d="M5 10 L27 16 L9 16 Z" fill="white"/>
+  <path d="M9 16 L27 16 L5 22 Z" fill="#d0e8f2"/>
+  <!-- trail dots = progress steps -->
+  <circle cx="7" cy="25" r="1" fill="#40b4e5" opacity="0.4"/>
+  <circle cx="11" cy="24" r="1" fill="#40b4e5" opacity="0.6"/>
+  <circle cx="15" cy="23" r="1" fill="#40b4e5" opacity="0.8"/>
+</svg>

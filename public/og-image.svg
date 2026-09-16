@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Source for og-image.png (the file social previews actually use). Re-render at 1200x630 after editing. -->
+  <defs>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;800&amp;display=swap');</style>
+    <radialGradient id="bg" cx="50%" cy="35%" r="70%">
+      <stop offset="0" stop-color="#0b3a6e"/>
+      <stop offset="1" stop-color="#002145"/>
+    </radialGradient>
+    <filter id="lift" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#000a1a" flood-opacity=".4"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <g font-family="Inter, system-ui, -apple-system, Arial, sans-serif" text-anchor="middle">
+    <text x="600" y="226" font-size="124" font-weight="800" fill="#ffffff" letter-spacing="-2.4">UBC Arrival Guide</text>
+    <text x="600" y="292" font-size="40" font-weight="500" fill="#97d4e9">Information Access for International Students at UBC</text>
+  </g>
+
+  <!-- paper plane: the favicon's plane scaled up (same parts): wings and a vertical centre crease, pointed nose -->
+  <g filter="url(#lift)">
+    <g transform="translate(1093.1 340.1) rotate(-32.9)">
+      <path d="M0 0 L-243 -99 L-172.53 0 Z" fill="#ffffff"/>
+      <path d="M0 0 L-243 99 L-172.53 0 Z" fill="#d0e8f2"/>
+      <path d="M0 0 L-4.418 1.8 L-173.811 1.8 L-172.53 0 L-173.811 -1.8 L-4.418 -1.8 Z" fill="#8ec3df"/>
+    </g>
+  </g>
+
+  <!-- trail: one elliptical arc (the smile), dotted at even spacing -->
+  <g fill="#40b4e5">
+    <circle cx="110.2" cy="348.9" r="4.5"/>
+    <circle cx="121.2" cy="370.1" r="4.5"/>
+    <circle cx="135.2" cy="389.6" r="4.5"/>
+    <circle cx="151.3" cy="407.3" r="4.5"/>
+    <circle cx="169.2" cy="423.4" r="4.5"/>
+    <circle cx="188.4" cy="437.8" r="4.5"/>
+    <circle cx="208.5" cy="450.9" r="4.5"/>
+    <circle cx="229.4" cy="462.7" r="4.5"/>
+    <circle cx="250.9" cy="473.3" r="4.5"/>
+    <circle cx="295.3" cy="491.4" r="4.5"/>
+    <circle cx="318.1" cy="499.1" r="4.5"/>
+    <circle cx="341.1" cy="506" r="4.5"/>
+    <circle cx="364.3" cy="512" r="4.5"/>
+    <circle cx="387.7" cy="517.3" r="4.5"/>
+    <circle cx="411.3" cy="521.8" r="4.5"/>
+    <circle cx="435" cy="525.6" r="4.5"/>
+    <circle cx="458.8" cy="528.8" r="4.5"/>
+    <circle cx="482.6" cy="531.3" r="4.5"/>
+    <circle cx="530.5" cy="534.4" r="4.5"/>
+    <circle cx="554.5" cy="534.9" r="4.5"/>
+    <circle cx="578.5" cy="534.9" r="4.5"/>
+    <circle cx="602.5" cy="534.2" r="4.5"/>
+    <circle cx="626.5" cy="532.9" r="4.5"/>
+    <circle cx="650.4" cy="531" r="4.5"/>
+    <circle cx="674.3" cy="528.4" r="4.5"/>
+    <circle cx="698" cy="525.2" r="4.5"/>
+    <circle cx="721.7" cy="521.3" r="4.5"/>
+    <circle cx="745.3" cy="516.6" r="4.5"/>
+    <circle cx="791.9" cy="505.1" r="4.5"/>
+    <circle cx="814.8" cy="498.2" r="4.5"/>
+    <circle cx="837.5" cy="490.4" r="4.5"/>
+    <circle cx="859.9" cy="481.7" r="4.5"/>
+    <circle cx="881.8" cy="472" r="4.5"/>
+    <circle cx="903.3" cy="461.2" r="4.5"/>
+    <circle cx="924.1" cy="449.3" r="4.5"/>
+  </g>
+
+  <!-- tracker checkpoints, each replacing one trail dot: done, done, to do -->
+  <g font-family="Inter, system-ui, -apple-system, Arial, sans-serif" font-size="27" font-weight="600" text-anchor="middle">
+    <circle cx="272.9" cy="482.9" r="15" fill="#40b4e5"/>
+    <text x="272.9" y="583.1" fill="#ffffff">What to do first</text>
+    <circle cx="506.6" cy="533.1" r="15" fill="#40b4e5"/>
+    <text x="506.6" y="583.1" fill="#ffffff">How to do it</text>
+    <circle cx="768.7" cy="511.3" r="12.5" fill="#002145" stroke="#40b4e5" stroke-width="5"/>
+    <text x="768.7" y="583.1" fill="#97d4e9">Ask anonymously</text>
+  </g>
+
+</svg>

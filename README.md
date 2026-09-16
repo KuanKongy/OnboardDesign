@@ -1,11 +1,36 @@
-# UBC Arrival Guide — MVP Prototype
+# UBC Arrival Guide
 
 **Live site:** <https://onboard-design.vercel.app>
 
-A two-component product for newly arrived UBC international students:
+## About This Project
+
+This is a CPSC 344 (Introduction to HCI) design study investigating **information access for newly arrived international students at UBC**. The core problem: arrival tasks are time-sensitive and unfamiliar, but the information needed to complete them is scattered across UBC webpages, government sites, emails, and informal peer sources. Students don't know what to do first, can't find trustworthy step-by-step guidance in one place, and risk exposing themselves publicly when seeking peer advice.
+
+The prototype is a two-component system — a **weekly email newsletter** paired with an **interactive arrival task tracker** — evaluated through a 10-participant usability study with think-aloud walkthroughs and Likert questionnaires.
+
+**Read the full final report:** [`doc/milestone-4-final-report.md`](doc/milestone-4-final-report.md)
+
+## The Design
 
 - **Arrival Tracker (website)** — the source of truth. Prioritized arrival tasks with consolidated step-by-step instructions, verified peer notes, completion tracking, and an anonymous Q&A entry point.
 - **Email newsletter** — generated *from* the tracker's data. A periodic digest of the current truth: what's urgent now, what changed, what's no longer needed, linking back into the tracker.
+
+### Design Requirements
+
+| Req | Name | Description |
+|---|---|---|
+| R1 | Self-Sufficiency | Complete a task without leaving the design |
+| R2 | Prioritization | Know what to do first |
+| R3 | Confidence | Trust the information enough to act on it |
+| R4 | Low Exposure | Reach peer advice without being publicly identified |
+
+### Key Findings (10-participant usability study)
+
+- **Confidence was high** (4.5/5), driven by UBC branding and peer-verified quotes
+- **Priority identification was harder** — only 4/10 participants identified the most urgent task unprompted
+- **Newsletter-to-tracker handoff broke** for 4/10 participants (link buried too far down)
+- **Q&A discoverability** — almost half of participants missed the anonymous Q&A button initially
+- **AI-written text stood out** as a trust concern because the rest was deliberately rough
 
 ## Run it
 
@@ -20,22 +45,13 @@ npm run dev
 | `/#/inbox` | Simulated email inbox with both newsletter issues |
 | `/#/inbox/week-1`, `/#/inbox/week-2` | Individual issues |
 | `/#/ask` | Anonymous Q&A board |
-| `/#/tracker?reset=1` | **Researcher-only:** clears all participant state (completion + read issues) between sessions. Not exposed anywhere in the UI. |
+| `/#/tracker?reset=1` | **Researcher-only:** clears all participant state between sessions |
 
-## What users can do
-
-- Read a newsletter issue and identify the highest-priority arrival task from its delivered order.
-- Follow the newsletter CTA into the tracker.
-- Scan tasks grouped by urgency ("Do this week" / "Coming up" / "Done"), filter (All | Urgent | Done), and see overall progress plus the current top priority.
-- Expand any task in place to get every step, a verified peer note, and the source + last-updated date — without leaving the page.
-- Check tasks off; progress, grouping, and the "next up" cue update immediately and persist across reloads.
-- Reach peer advice and ask a question with zero identifying steps (no account, name, or email anywhere).
-
-## Main interaction flow
+## Main Interaction Flow
 
 Inbox → open Week 1 issue → top task is #1 in the "Do these now" list → "Open your Arrival Tracker" → tracker shows the same priorities → expand a task → follow steps → check off → toast names the next priority and the progress bar advances → "Ask a question anonymously" from the task card (or header) → Q&A board. Week 2's issue then demonstrates the update mechanism: promoted, new, and dropped tasks, with tasks the user already completed struck through.
 
-## Functional vs. simulated vs. out of scope
+## Functional vs. Simulated vs. Out of Scope
 
 | Part | Status | Notes |
 | --- | --- | --- |
@@ -43,13 +59,13 @@ Inbox → open Week 1 issue → top task is #1 in the "Do these now" list → "O
 | Task expansion with steps, peer note, source/date | **Functional** | All content in place per task |
 | Completion checkboxes, progress bar, next-up cue | **Functional** | State persists via localStorage |
 | Newsletter issues (in-app) reflecting live completion state | **Functional** | Reads the same stored state as the tracker |
-| Email delivery | **Simplified** | Issues are rendered to real Gmail-safe HTML (`npm run build:email`) and sent manually; no automated send pipeline |
+| Email delivery | **Simplified** | Issues are rendered to real Gmail-safe HTML (`npm run build:email`) and sent manually |
 | Inbox chrome (sidebar, search, compose) | **Simulated** | Static frame so the newsletter is read in a realistic context |
 | Anonymous Q&A board | **Wizard-of-Oz** | Pre-written verified answers; posting shows confirmation but stores nothing |
 | Peer notes | **Simplified** | Realistic filler quotes; no real submission/verification pipeline |
-| Accounts, backend, notifications, content management | **Out of scope** | A real system would personalize sent emails server-side; the prototype demonstrates the equivalent client-side |
+| Accounts, backend, notifications, content management | **Out of scope** | A real system would personalize sent emails server-side |
 
-## Sending the newsletter as a real email
+## Sending the Newsletter as a Real Email
 
 `npm run build:email` renders each issue from the same data modules as the site into `email-export/`:
 
@@ -62,15 +78,18 @@ The CTA link points to the live site (`https://onboard-design.vercel.app/#/track
 TRACKER_URL="https://your-site.example/#/tracker" npm run build:email
 ```
 
-## Where things live
+## Where Things Live
 
 - `src/data/tasks.js` — **single source of truth**: the 8 arrival tasks; edit here and the tracker, in-app newsletter, and exported emails all update
 - `src/data/newsletters.js` — issue definitions: ordered task ids + added/updated/dropped annotations
 - `src/data/qaPosts.js` — Q&A board content
 - `src/components/tracker|inbox|ask|layout/` — views
 - `scripts/build-email.mjs` — email HTML/text generator (imports the data modules directly; keep them free of JSX/app imports)
+- `doc/milestone-4-final-report.md` — the full CPSC 344 Milestone 4 final report
+- `public/` — brand assets. `favicon.svg` is a paper plane (the newsletter) pointing north, with a column of tracker circles beside it (one open "next" step above two done ones); `favicon-32.png` and `apple-touch-icon.png` are PNG renders of it. `og-image.svg` is the source for `og-image.png`, the social preview (most platforms don't accept SVG), so re-render the PNG at 1200×630 after editing the SVG. Icons are linked with `./` paths so each deploy (localhost, a GitHub Pages subpath, Vercel) shows this repo's own icon.
+- `design/` — earlier brand versions kept for reference (not shipped), e.g. the horizontal paper-plane favicon.
 
-## How to edit things
+## How to Edit Things
 
 **Task content** (titles, summaries, steps, peer notes, sources, urgency): edit the task's object in `src/data/tasks.js`. The tracker updates instantly under `npm run dev`; re-run `npm run build:email` to refresh the email files. Priority order = `urgencyRank` (1 is first); which group a task sits in = `urgency` (`'urgent'` → "Do this week", `'soon'`/`'later'` → "Coming up").
 
