@@ -21,8 +21,8 @@
   <g filter="url(#lift)">
     <g transform="translate(1093.1 340.1) rotate(-32.9)">
       <path d="M0 0 L-243 -99 L-172.53 0 Z" fill="#ffffff"/>
-      <path d="M0 0 L-243 99 L-172.53 0 Z" fill="#d0e8f2"/>
-      <path d="M0 0 L-4.418 1.8 L-173.811 1.8 L-172.53 0 L-173.811 -1.8 L-4.418 -1.8 Z" fill="#8ec3df"/>
+      <path d="M0 0 L-243 99 L-172.53 0 Z" fill="#9fd0ec"/>
+      <path d="M0 0 L-4.418 1.8 L-173.811 1.8 L-172.53 0 L-173.811 -1.8 L-4.418 -1.8 Z" fill="#4a90c7"/>
     </g>
   </g>
 

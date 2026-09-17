@@ -87,7 +87,7 @@ TRACKER_URL="https://your-site.example/#/tracker" npm run build:email
 - `scripts/build-email.mjs` — email HTML/text generator (imports the data modules directly; keep them free of JSX/app imports)
 - `doc/milestone-4-final-report.md` — the full CPSC 344 Milestone 4 final report
 - `public/` — brand assets. `favicon.svg` is a paper plane (the newsletter) pointing north, with a column of tracker circles beside it (one open "next" step above two done ones); `favicon-32.png` and `apple-touch-icon.png` are PNG renders of it. `og-image.svg` is the source for `og-image.png`, the social preview (most platforms don't accept SVG), so re-render the PNG at 1200×630 after editing the SVG. Icons are linked with `./` paths so each deploy (localhost, a GitHub Pages subpath, Vercel) shows this repo's own icon.
-- `design/` — earlier brand versions kept for reference (not shipped), e.g. the horizontal paper-plane favicon.
+- `design/` — earlier brand versions kept for reference (not shipped), e.g. the horizontal paper-plane favicon, the larger north-pointing plane (`favicon-north-plane.svg`), and the A-sized plane with the paler right wing (`favicon-a-sized-plane.svg`).
 
 ## How to Edit Things
 
